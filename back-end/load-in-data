@@ -1,0 +1,21 @@
+chefs:
+
+{"name":"Gordon Ramsay"}
+{"name":"Andrew Rea"}
+{"name":"Joshua Weissman"}
+
+
+recipes:
+
+
+{"name": "Millionare Shortbread", "link": "https://basicswithbabish.co/basicsepisodes/millionaires-shortbread", "photoURL": "https://images.squarespace-cdn.com/content/v1/59d40133017db2fd8a60b3fe/1581715119027-T6NNEF161J3EPR6QXL70/ke17ZwdGBToddI8pDm48kNvT88LknE-K9M4pGNO0Iqd7gQa3H78H3Y0txjaiv_0fDoOvxcdMmMKkDsyUqMSsMWxHk725yiiHCCLfrh8O1z5QPOohDIaIeljMHgDF5CVlOqpeNLcJ80NK65_fV7S1UbeDbaZv1s3QfpIA4TYnL5Qao8BosUKjCVjCf8TKewJIH3bqxw7fF48mhrq5Ulr0Hg/Screen+Shot+2020-02-12+at+7.44.14+PM.png?format=2500w", "favorite": "false", "description": "A dessert involving shortbread, caramel, and chocolate"}
+
+{"name": "Tteokbokki","link": "https://basicswithbabish.co/basicsepisodes/korean-rice-cakes", "photoURL": "https://images.squarespace-cdn.com/content/v1/59d40133017db2fd8a60b3fe/1616770032628-7Y6EW95XQEM4LLF7IBKK/ke17ZwdGBToddI8pDm48kER99XzJSCVY9jo2M337vs17gQa3H78H3Y0txjaiv_0fDoOvxcdMmMKkDsyUqMSsMWxHk725yiiHCCLfrh8O1z4YTzHvnKhyp6Da-NYroOW3ZGjoBKy3azqku80C789l0mKsjHBOd62cZInIsOsdpMPEkjpxUmuDQrgYGd_3JVD-asZUz1AxDR3_cGGQ8tD2cA/Screen+Shot+2021-03-26+at+9.46.50+AM.png?format=2500w", "favorite": "false", "description": "A traditional korean spicy snack"}
+
+{"name": "Stuffed Pork Tenderloin", "link": "https://www.gordonramsay.com/gr/recipes/pork-stuffed-with-manchego-and-membrillo/", "photoURL": "https://www.gordonramsay.com/assets/Uploads/_resampled/CroppedFocusedImage192072050-50-Stuffed-pork-1305.jpg", "favorite": "false", "description": "Thick pork tenderloin, stuffed with cheese and herbs"}
+
+{"name": "Baked Chicken Wings", "link": "https://www.gordonramsay.com/gr/recipes/bakedchickenwings/", "photoURL": "https://www.gordonramsay.com/assets/Uploads/_resampled/CroppedFocusedImage192072050-50-BAKEDWINGS.jpg", "favorite": "false", "description": "Classic gameday spicy wings"}
+
+{"name": "Popeyes Chicken Sandwich", "link": "https://www.youtube.com/watch?v=T5SYu8tyKjM", "photoURL": "https://i.ytimg.com/an_webp/T5SYu8tyKjM/mqdefault_6s.webp?du=3000&sqp=CMGmj4MG&rs=AOn4CLCvXw9gQ_O-DdmWITwH_CANF5-4_g", "favorite": "false", "description": "A copycat recipe emulating Popeyes famous chicken sandwich"}
+
+{"name": "Hot Chocolate", "link": "https://www.youtube.com/watch?v=pn-W0DVQw8Y", "photoURL": "https://i.ytimg.com/an_webp/pn-W0DVQw8Y/mqdefault_6s.webp?du=3000&sqp=CMClj4MG&rs=AOn4CLChBVNaQ1mzepW-Fb7y6X4goke-yw", "favorite": "false", "description": "Hot chocolate in 3 different ways"}
