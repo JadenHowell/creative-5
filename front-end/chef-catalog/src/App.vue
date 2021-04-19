@@ -2,13 +2,14 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/profile">Add more</router-link>
+      <router-link to="/add">Add more recipes</router-link> |
+      <router-link to="/profile">Profile</router-link>
     </div>
     <div class="content">
       <router-view/>
     </div>
     <div class="footer">
-      <div class="githublink">Follow to my Github repo <a href="https://github.com/JadenHowell/creative-4">here</a></div>
+      <div class="githublink">Follow to my Github repo <a href="https://github.com/JadenHowell/creative-5">here</a></div>
     </div>
   </div>
 </template>

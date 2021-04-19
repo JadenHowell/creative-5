@@ -1,106 +1,43 @@
 <template>
-  <div class="Profile">
-    <h1>Upload some more recipes!</h1>
-    <h3>Selected chef: {{this.chef.name}}</h3>
-    <div id="chefs">
-      <button class="chefButton" v-for="chef in chefs" :key=chef._id @click=selectChef(chef)>{{chef.name}}</button>
+<div class="hero">
+  <div class="heroBox">
+    <div v-if="!this.$root.$data.user">
+        <h1>Sign in in order to compare your own recipes to chefs!</h1>
+        <form class="pure-form">
+        <fieldset>
+            <legend>Register for an account</legend>
+            <input placeholder="first name" v-model="firstName">
+            <input placeholder="last name" v-model="lastName">
+        </fieldset>
+        <fieldset>
+            <input placeholder="username" v-model="username">
+            <input type="password" placeholder="password" v-model="password">
+        </fieldset>
+        <fieldset>
+            <button type="submit" class="pure-button pure-button-primary" @click.prevent="register">Register</button>
+        </fieldset>
+        </form>
+        <p v-if="error" class="error">{{error}}</p>
+        <form class="pure-form">
+        <fieldset>
+            <legend>Login</legend>
+            <input placeholder="username" v-model="usernameLogin">
+            <input type="password" placeholder="password" v-model="passwordLogin">
+        </fieldset>
+        <fieldset>
+            <button type="submit" class="pure-button pure-button-primary" @click.prevent="login">Login</button>
+        </fieldset>
+        </form>
+        <p v-if="errorLogin" class="error">{{errorLogin}}</p>
     </div>
-    <div class="adding">
-      <div class="addRec">
-        <div class="form">
-          <input v-model="title" placeholder="Recipe Name">
-          <p></p>
-          <textarea v-model="description" placeholder="Description">Description</textarea>
-          <p></p>
-          <input type="file" name="photo" @change="fileChanged">
-          <p></p>
-          <input v-model="url" placeholder="Recipe URL">
-          <p></p>
-          <button @click="upload">Upload</button>
-        </div>
-        <div class="upload" v-if="addRec">
-          <h2>{{addRec.name}}</h2>
-          <img :src="addRec.photoURL" />
-          <p class="describe">{{addRec.description}}</p>
-        </div>
-      </div>
-      <div class="addChef">
-        <div class="form">
-          <button @click="deleteChef">Delete selected chef</button>
-          <p></p>
-          <input v-model="chefName" placeholder="Chef Name">
-          <p></p>
-          <button @click="newChef">Add chef</button>
-        </div>
-      </div>
+    <div v-else>
+        <h1>Currently signed in as:</h1>
+        <h2>{{this.$root.$data.user.username}}</h2>
+        <button class="signout" @click.prevent="logout">Sign out</button>
     </div>
   </div>
+</div>
 </template>
-
-<style scoped>
-.image h2 {
-  font-style: italic;
-  font-size: 1em;
-}
-
-.heading {
-  display: flex;
-  margin-bottom: 20px;
-  margin-top: 20px;
-}
-
-.heading h2 {
-  margin-top: 8px;
-  margin-left: 10px;
-}
-
-.adding{
-  display: flex;
-  margin: 25px auto;
-  flex-direction: row;
-  justify-content: space-around;
-}
-
-.addRec
-.addChef {
-  display: flex;
-  witdth: 400px;
-}
-
-.describe{
-  font-size: 12px;
-}
-
-/* Form */
-input,
-textarea,
-select,
-button {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1em;
-}
-
-.form {
-  margin-right: 50px;
-}
-
-/* Uploaded images */
-.upload h2 {
-  margin: 0px;
-}
-
-.upload img {
-  max-width: 300px;
-}
-
-.chefButton{
-  border: none;
-}
-
-button.selected {
-  background-color: #00ff00;
-}
-</style>
 
 <script>
 import axios from 'axios';
@@ -108,77 +45,135 @@ export default {
   name: 'Profile',
   data() {
     return {
-      title: "",
-      url: "",
-      description: "",
-      file: null,
-      addRec: null,
-      chefs: [],
-      chef: {},
-      chefName: "",
+      firstName: '',
+      lastName: '',
+      username: '',
+      password: '',
+      usernameLogin: '',
+      passwordLogin: '',
+      error: '',
+      errorLogin: '',
     }
   },
   created() {
-    this.setup();
+    this.loadAll();
   },
   methods: {
-    async setup(){
-      await this.getChefs();
-      if(this.chefs.length > 0){
-        this.chef = this.chefs[0];
-      } else {
-        this.chef = {name: "None"};
+    async loadAll(){
+      //This uses axios to access this new endpoint at GET /api/users to get the currently logged in user, 
+      //  and if found, set the user state in the global data storage so all components can use it.
+      try {
+        let response = await axios.get('/api/users');
+        this.$root.$data.user = response.data.user;
+      } catch (error) {
+        this.$root.$data.user = null;
       }
     },
-    fileChanged(event) {
-      this.file = event.target.files[0]
-    },
-    async upload() {
+    async logout() {
       try {
-        const formData = new FormData();
-        formData.append('photo', this.file, this.file.name)
-        let r1 = await axios.post('/api/photos', formData);
-        let r2 = await axios.post('/api/chefs/'+this.chef._id+'/recipes', {
-          name: this.title,
-          description: this.description,
-          photoURL: r1.data.path,
-          favorite: false,
-          link: this.url,
+        await axios.delete("/api/users");
+        this.$root.$data.user = null;
+      } catch (error) {
+        this.$root.$data.user = null;
+      }
+    },
+    async register() {
+      this.error = '';
+      this.errorLogin = '';
+      if (!this.firstName || !this.lastName || !this.username || !this.password)
+        return;
+      try {
+        let response = await axios.post('/api/users', {
+          firstName: this.firstName,
+          lastName: this.lastName,
+          username: this.username,
+          password: this.password,
         });
-        this.addRec = r2.data;
+        this.$root.$data.user = response.data.user;
       } catch (error) {
-        //console.log(error);
+        this.error = error.response.data.message;
+        this.$root.$data.user = null;
       }
     },
-    async getChefs() {
+    async login() {
+      this.error = '';
+      this.errorLogin = '';
+      if (!this.usernameLogin || !this.passwordLogin)
+        return;
       try {
-        const response = await axios.get("/api/chefs");
-        this.chefs = response.data;
-      } catch (error) {
-        //console.log(error);
-      }
-    },
-    async newChef() {
-      try {
-        await axios.post("/api/chefs", {
-          name: this.chefName,
+        let response = await axios.post('/api/users/login', {
+          username: this.usernameLogin,
+          password: this.passwordLogin,
         });
-        this.getChefs();
+        this.$root.$data.user = response.data.user;
       } catch (error) {
-        //console.log(error);
+        this.errorLogin = "Error: " + error.response.data.message;
+        this.$root.$data.user = null;
       }
-    },
-    async deleteChef() {
-      try {
-        await axios.delete("/api/chefs/"+this.chef._id);
-        this.getChefs();
-      } catch (error) {
-        //console.log(error);
-      }
-    },
-    selectChef(chef) {
-      this.chef = chef;
     },
   }
 }
 </script>
+
+<style scoped>
+h1 {
+  font-size: 28px;
+  font-variant: capitalize;
+}
+
+.hero {
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.heroBox {
+  background: white;
+  opacity: 0.95;
+  display: inline;
+  padding: 20px;
+  font-size: 20px;
+  text-align: center;
+  border-radius: 30px;
+}
+
+.hero::after {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  z-index: -1;
+}
+
+.hero form {
+  font-size: 16px;
+}
+
+.hero form legend {
+  font-size: 24px;
+}
+
+input {
+  margin-right: 10px;
+}
+
+.error {
+  margin-top: 20px;
+  display: inline;
+  padding: 5px 20px;
+  border-radius: 30px;
+  font-size: 10px;
+  background-color: #d9534f;
+  color: #fff;
+}
+.signout {
+  margin-top: 20px;
+  display: inline;
+  padding: 5px 20px;
+  border-radius: 30px;
+  font-size: 10px;
+  background-color: #d9534f;
+  color: #fff;
+}
+</style>

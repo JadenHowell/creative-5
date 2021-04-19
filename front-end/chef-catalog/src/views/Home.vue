@@ -12,6 +12,13 @@
         </div>
       </div>
     </div>
+    <div class='personal-recs'>
+      <div v-if="user">
+      </div>
+      <div v-else>
+        <h2>Sign in to compare your own recipes!</h2>
+      </div>
+    </div>
     <div class="selection">
       <div v-if="isSelected">
         <div class="top-half">
@@ -49,8 +56,22 @@ export default {
   created() {
     this.loadAll();
   },
+  computed: {
+    user() {
+      return this.$root.$data.user;
+    }
+  },
   methods: {
     async loadAll(){
+      //This uses axios to access this new endpoint at GET /api/users to get the currently logged in user, 
+      //  and if found, set the user state in the global data storage so all components can use it.
+      try {
+        let response = await axios.get('/api/users');
+        this.$root.$data.user = response.data.user;
+      } catch (error) {
+        this.$root.$data.user = null;
+      }
+      
       await this.loadChefs();
       for( let i = 0; i < this.chefs.length; i ++){
         this.loadRecipes(this.chefs[i]);
@@ -88,7 +109,7 @@ export default {
     },
     async putFavorite(){
       try{
-        let response = await axios.put("/api/chefs/"+this.selectedRecipe.chef+"/recipes/"+this.selectedRecipe._id,{
+        await axios.put("/api/chefs/"+this.selectedRecipe.chef+"/recipes/"+this.selectedRecipe._id,{
             name: this.selectedRecipe.name,
             link: this.selectedRecipe.link,
             photoURL: this.selectedRecipe.photoURL,
@@ -181,5 +202,3 @@ export default {
   color: #e2264d;
 }
 </style>
-
-selectedRecipe

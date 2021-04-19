@@ -12,6 +12,18 @@ app.use(bodyParser.urlencoded({
 // parse application/json
 app.use(bodyParser.json());
 
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
+const cookieSession = require('cookie-session');
+app.use(cookieSession({
+    name: 'session',
+    keys: ['secretValue'],
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+}));
+
 // connect to the database
 mongoose.connect('mongodb://localhost:27017/chef-competition', {
   useNewUrlParser: true,
@@ -202,4 +214,8 @@ app.delete('/api/chefs/:chefID/recipes/:recipeID', async (req, res) => {
     }
 });
 
-app.listen(3001, () => console.log('Server listening on port 3001!'));
+// import the users module and setup its API path
+const users = require("./users.js");
+app.use("/api/users", users.routes);
+
+app.listen(3003, () => console.log('Server listening on port 3003!'));
