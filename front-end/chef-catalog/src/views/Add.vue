@@ -1,11 +1,20 @@
 <template>
-  <div class="Add">
+  <div class="Add" v-if="user">
     <h1>Upload some more recipes!</h1>
     <h3>Selected chef: {{this.chef.name}}</h3>
     <div id="chefs">
       <button class="chefButton" v-for="chef in chefs" :key=chef._id @click=selectChef(chef)>{{chef.name}}</button>
     </div>
     <div class="adding">
+      <div class="addChef">
+        <div class="form">
+          <button @click="deleteChef">Delete selected chef</button>
+          <p></p>
+          <input v-model="chefName" placeholder="Chef Name">
+          <p></p>
+          <button @click="newChef">Add chef</button>
+        </div>
+      </div>
       <div class="addRec">
         <div class="form">
           <input v-model="title" placeholder="Recipe Name">
@@ -16,7 +25,7 @@
           <p></p>
           <input v-model="url" placeholder="Recipe URL">
           <p></p>
-          <button @click="upload">Upload</button>
+          <button @click="upload">Upload for chef</button>
         </div>
         <div class="upload" v-if="addRec">
           <h2>{{addRec.name}}</h2>
@@ -24,16 +33,13 @@
           <p class="describe">{{addRec.description}}</p>
         </div>
       </div>
-      <div class="addChef">
-        <div class="form">
-          <button @click="deleteChef">Delete selected chef</button>
-          <p></p>
-          <input v-model="chefName" placeholder="Chef Name">
-          <p></p>
-          <button @click="newChef">Add chef</button>
-        </div>
-      </div>
     </div>
+    <div v-if="problem">
+        <h1>You can't supply recipes for / delete chefs you didn't introduce!</h1>
+    </div>
+  </div>
+  <div v-else>
+    <h1>Sign up or log in to contribute!</h1>
   </div>
 </template>
 
@@ -116,10 +122,16 @@ export default {
       chefs: [],
       chef: {},
       chefName: "",
+      problem: false,
     }
   },
   created() {
     this.setup();
+  },
+  computed: {
+    user() {
+      return this.$root.$data.user;
+    }
   },
   methods: {
     async setup(){
@@ -146,8 +158,10 @@ export default {
           link: this.url,
         });
         this.addRec = r2.data;
+        this.problem = false;
       } catch (error) {
-        //console.log(error);
+        this.problem = true;
+        console.log(error);
       }
     },
     async getChefs() {
@@ -172,7 +186,9 @@ export default {
       try {
         await axios.delete("/api/chefs/"+this.chef._id);
         this.getChefs();
+        this.problem = false;
       } catch (error) {
+        this.problem = true;
         //console.log(error);
       }
     },

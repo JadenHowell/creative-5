@@ -16,7 +16,7 @@
       <div v-if="user">
       </div>
       <div v-else>
-        <h2>Sign in to compare your own recipes!</h2>
+        <h2>Sign in to add more recipes!</h2>
       </div>
     </div>
     <div class="selection">
@@ -136,6 +136,7 @@ export default {
 
 .chefName{
   margin-top: 25px;
+  margin-bottom: 5px;
 }
 
 .recipe-list{
@@ -143,6 +144,12 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
+}
+
+.celeb-chef{
+  background-color:#fcd6c7;
+  border-radius: 20px;
+  margin-bottom: 10px;
 }
 
 .rec{

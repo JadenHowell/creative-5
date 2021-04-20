@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const users = require("./users.js");
+const validUser = users.valid;
 
 const app = express();
 
@@ -51,9 +53,14 @@ app.post('/api/photos', upload.single('photo'), async (req, res) => {
     });
 });
 
+const User = users.model;
 // Create a scheme for chefs
 const chefSchema = new mongoose.Schema({
-    name: String
+    name: String,
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: "User"
+    },
 });  
 // Create a model for chefs
 const Chef = mongoose.model('Chef', chefSchema);
@@ -74,8 +81,9 @@ const recipeSchema = new mongoose.Schema({
 const Recipe = mongoose.model('Recipe',recipeSchema);
 
 // Add a Chef
-app.post('/api/chefs', async (req, res) => {
+app.post('/api/chefs', validUser, async (req, res) => {
     const chef = new Chef({
+      user: req.user,
       name: req.body.name
     });
     try {
@@ -107,12 +115,16 @@ app.get('/api/chefs/:chefID', async (req, res) => {
       res.sendStatus(500);
     }
 });
-//Remove a specific chef (for internal use only)
-app.delete('/api/chefs/:chefID', async (req, res) => {
+//Remove a specific chef
+app.delete('/api/chefs/:chefID', validUser, async (req, res) => {
     try {
         let chef = await Chef.findOne({_id:req.params.chefID});
         if (!chef) {
             res.send(404);
+            return;
+        }
+        if(String(chef.user) != String(req.user._id)){
+            res.send(403);
             return;
         }
         await chef.delete();
@@ -123,11 +135,15 @@ app.delete('/api/chefs/:chefID', async (req, res) => {
     }
 });
 // Add a Recipe
-app.post('/api/chefs/:chefID/recipes', async (req, res) => {
+app.post('/api/chefs/:chefID/recipes',validUser, async (req, res) => {
     try {
         let chef = await Chef.findOne({_id: req.params.chefID});
         if (!chef) {
             res.send(404);
+            return;
+        }
+        if(String(chef.user) != String(req.user._id)){
+            res.send(403);
             return;
         }
         let recipe = new Recipe({
@@ -215,7 +231,6 @@ app.delete('/api/chefs/:chefID/recipes/:recipeID', async (req, res) => {
 });
 
 // import the users module and setup its API path
-const users = require("./users.js");
 app.use("/api/users", users.routes);
 
 app.listen(3003, () => console.log('Server listening on port 3003!'));
