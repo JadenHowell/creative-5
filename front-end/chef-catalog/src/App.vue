@@ -9,7 +9,7 @@
       <router-view/>
     </div>
     <div class="footer">
-      <div class="githublink">Hours spent: N Follow to my Github repo <a href="https://github.com/JadenHowell/creative-5">here</a></div>
+      <div class="githublink">Hours spent: 4 Follow to my Github repo <a href="https://github.com/JadenHowell/creative-5">here</a></div>
     </div>
   </div>
 </template>
